@@ -14,6 +14,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+# This method warns the user of the risks regardigng the program and also allows the user to set the mode to SFW or NSFW.
 def settings():
 	print("WARNING: This program is very destructive.")
 	print("WARNING: The makers of said program are not liable for any damadges.")
@@ -39,7 +40,8 @@ def settings():
 	
 	print("Have fun!")
 
-def prompting(prompt, model='llama3'):
+# This method prompts the deepseek-r1:1.5b LLM and receives an answer. 
+def prompting(prompt, model='deepseek-r1:1.5b'):
 	try:
 		response = ollama.chat(model=model, messages=[
 			{'role': 'user', 'content': prompt},
@@ -52,7 +54,8 @@ def prompting(prompt, model='llama3'):
 	except Exception as e:
 		logging.error(f"Failed to connect to AI: {e}")
 		return "Error: Could not reach Ollama. Is it running?"
-	
+
+# This method takes a command and executes it based on the given parameters.
 def linter(queue):
 	for (item in queue):
 		if ("[EXIT]"):
@@ -90,7 +93,9 @@ def linter(queue):
 				service = "pipewire"
 			
 			os.system(f'sudo systemctl {mode} {service}')
-		
+
+# This method parses the string response received from the AI and returns a array of commands made up of an array of strings.
+# ex) [['[WAIT]', '20'], ['[INSULT]', 'You', 'Smell']]
 def parse_response(response):
 	
 	queue = response.split("\n")
@@ -98,7 +103,7 @@ def parse_response(response):
 	index = 0
 	for i in x:
 		queue[index] = i.split(" ")
-		index += 1  # ← Fix: use += not ++
+		index += 1  
 
 	return queue
 	
@@ -115,6 +120,7 @@ def on_exit_signal():
     # Use os._exit to force immediate termination from the listener thread
 	os._exit(0)
 
+# This method handles user interaction and AI responses.
 def main():
 	mouse = Controller()
 	
