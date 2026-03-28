@@ -46,6 +46,15 @@ else
     fi
 fi
 
+# Check and Install xdotool for X11 automation
+echo "Installing xdotool..."
+if ! command_exists xdotool; then
+    sudo apt-get install -y xdotool
+    echo "✓ xdotool installed successfully"
+else
+    echo "✓ xdotool is already installed"
+fi
+
 # Check if ollama binary exists
 if [ -f /usr/local/bin/ollama ] || [ -f /usr/bin/ollama ]; then
     echo "✓ ollama binary found, skipping installation"
