@@ -38,8 +38,15 @@ if pip3 list 2>/dev/null | grep -q "^pynput "; then
     echo "✓ pynput package is already installed"
 else
     echo "Installing pynput package..."
+    # Try user installation first
     if pip3 install --user pynput 2>/dev/null; then
-        echo "✓ pynput package installed successfully"
+        echo "✓ pynput package installed successfully (user mode)"
+    # If user install fails, try with --break-system-packages (for newer Ubuntu)
+    elif pip3 install --break-system-packages pynput 2>/dev/null; then
+        echo "✓ pynput package installed successfully (system override)"
+    # Last resort: try with sudo
+    elif sudo pip3 install pynput 2>/dev/null; then
+        echo "✓ pynput package installed successfully (system-wide)"
     else
         echo "✗ Failed to install pynput package"
         exit 1
