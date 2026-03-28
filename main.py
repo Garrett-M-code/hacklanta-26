@@ -5,7 +5,10 @@ import time
 import os
 import threading
 
+from ollama import Client
 from pynput.mouse import Button, Controller
+
+client = Client(host='http://127.0.0.1:11434')
 
 # Configure the logger
 logging.basicConfig(
@@ -53,7 +56,7 @@ def settings():
 # This method prompts the deepseek-r1:1.5b LLM and receives an answer.
 def prompting(prompt, model='deepseek-r1:1.5b'):
 	try:
-		response = ollama.chat(model=model, messages=[
+		response = client.chat(model=model, messages=[
 			{'role': 'user', 'content': prompt},
 		])
         
