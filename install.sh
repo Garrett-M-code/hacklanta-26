@@ -38,7 +38,7 @@ if pip3 list 2>/dev/null | grep -q "^pynput "; then
     echo "✓ pynput package is already installed"
 else
     echo "Installing pynput package..."
-    if pip3 install --user pynput 2>/dev/null then
+    if pip3 install --user pynput 2>/dev/null; then
         echo "✓ pynput package installed successfully"
     else
         echo "✗ Failed to install pynput package"
