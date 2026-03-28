@@ -8,8 +8,10 @@ in maliciousness. While some safegaurds to prevent major damage have been implem
 Therefore please have fun with this script in a safe virtual environment. 
 
 To install this program type the folowing command:
-sudo ./instal.sh
+
+sudo ./install.sh
 
 To run this program type the following command:
+
 sudo ./run.sh 
 
