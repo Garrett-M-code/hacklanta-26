@@ -13,12 +13,19 @@ fi
 # installing dependencies
 pip install keyboard
 
-# Installing ollama 
-curl -fsSL https://ollama.com/install.sh | sh
+# check if ollama is already installed
+if command_exists ollama; then
+  echo "✓ ollama is already installed"
+else 
+  echo "installing ollama..."
+  curl -fsSL https://ollama.com/install.sh | sh
 
-# Wait for ollama to start (adds a small delay)
-echo "Waiting for ollama to start..."
-sleep 3
+  # Wait for ollama to start (adds a small delay)
+  echo "Waiting for ollama to start..."
+  sleep 3
+fi
+
+
 
 # Checking ollama is running
 STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" "http://localhost:11434")
