@@ -67,9 +67,6 @@ fi
 echo "Waiting for ollama to start..."
 sleep 3
 
-# Check if the model is already downloaded
-echo "Checking for deepseek-r1:1.5b model..."
-
 if ollama list | grep -q "deepseek-r1:1.5b"; then
     echo "✓ Model deepseek-r1:1.5b is already downloaded"
     echo "  Skipping download..."
