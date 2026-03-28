@@ -70,6 +70,15 @@ else
     curl -fsSL https://ollama.com/install.sh | sh
 fi
 
+# Install python3-ollama for Python Ollama bindings
+echo "Installing python3-ollama..."
+if apt list --installed 2>/dev/null | grep -q "python3-ollama"; then
+    echo "✓ python3-ollama is already installed"
+else
+    sudo apt-get install -y python3-ollama
+    echo "✓ python3-ollama installed successfully"
+fi
+
 if ollama list | grep -q "deepseek-r1:1.5b"; then
     echo "✓ Model deepseek-r1:1.5b is already downloaded"
     echo "  Skipping download..."
