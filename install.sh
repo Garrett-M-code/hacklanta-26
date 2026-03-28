@@ -1,3 +1,6 @@
+# installing dependencies
+pip install keyboard
+
 # Installing ollama 
 curl -fsSL https://ollama.com/install.sh | sh
 
