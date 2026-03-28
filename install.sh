@@ -8,13 +8,18 @@ if ! command -v curl &> /dev/null; then
   sudo apt update && sudo apt install -y curl
 fi
 
-# check if pip3 is installed
+# Check if pip3 is installed
 if ! command -v pip &> /dev/null && ! command -v pip3 &> /dev/null; then
   echo "pip3 is not installed. Installing..."
   sudo apt update && sudo apt install -y python3-pip
 fi
 
-# installing dependencies
+# Install system Python packages
+echo "Installing system Python packages..."
+sudo apt-get install -y python3-tk python3-dev
+
+# Installing dependencies
+# Check and install keyboard
 echo "Checking Python dependencies..."
 if pip3 list 2>/dev/null | grep -q "^keyboard "; then
     echo "✓ keyboard package is already installed"
@@ -24,6 +29,19 @@ else
         echo "✓ keyboard package installed successfully"
     else
         echo "✗ Failed to install keyboard package"
+        exit 1
+    fi
+fi
+
+# Check and install pyautogui
+if pip3 list 2>/dev/null | grep -q "^pyautogui "; then
+    echo "✓ pyautogui package is already installed"
+else
+    echo "Installing pyautogui package..."
+    if pip3 install --user pyautogui 2>/dev/null || sudo pip3 install --break-system-packages pyautogui; then
+        echo "✓ pyautogui package installed successfully"
+    else
+        echo "✗ Failed to install pyautogui package"
         exit 1
     fi
 fi
