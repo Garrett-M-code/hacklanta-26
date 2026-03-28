@@ -12,11 +12,11 @@ fi
 
 # installing dependencies
 echo "Checking Python dependencies..."
-if pip list 2>/dev/null | grep -q "^keyboard "; then
+if pip3 list 2>/dev/null | grep -q "^keyboard "; then
     echo "✓ keyboard package is already installed"
 else
     echo "Installing keyboard package..."
-    if pip install keyboard; then
+    if pip3 install keyboard; then
         echo "✓ keyboard package installed successfully"
     else
         echo "✗ Failed to install keyboard package"
