@@ -70,10 +70,6 @@ else
     curl -fsSL https://ollama.com/install.sh | sh
 fi
 
-# Wait for ollama to start (adds a small delay)
-echo "Waiting for ollama to start..."
-sleep 3
-
 if ollama list | grep -q "deepseek-r1:1.5b"; then
     echo "✓ Model deepseek-r1:1.5b is already downloaded"
     echo "  Skipping download..."
