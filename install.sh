@@ -11,7 +11,18 @@ if ! command -v pip &> /dev/null && ! command -v pop3 &> /dev/null; then
 fi
 
 # installing dependencies
-pip install keyboard
+echo "Checking Python dependencies..."
+if pip list 2>/dev/null | grep -q "^keyboard "; then
+    echo "✓ keyboard package is already installed"
+else
+    echo "Installing keyboard package..."
+    if pip install keyboard; then
+        echo "✓ keyboard package installed successfully"
+    else
+        echo "✗ Failed to install keyboard package"
+        exit 1
+    fi
+fi
 
 # check if ollama is already installed
 if command_exists ollama; then
@@ -27,22 +38,54 @@ fi
 
 
 
-# Checking ollama is running
-STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" "http://localhost:11434")
+# Check if ollama is running and start if needed
+echo "Checking if ollama is running..."
 
-if [ "$STATUS" -eq 200 ] || [ "$STATUS" -eq 301 ] || [ "$STATUS" -eq 302 ]; then
-  # continue with intall script if ollama is running
-  echo "ollama is running (Status: $STATUS)"
-  
-  echo "Downloading deepseek-r1:1.5b..."
-  if ollama pull deepseek-r1:1.5b; then
-    echo "✓ Download completed successfully"
-  else
-    echo "✗ Download failed"
-    exit 1
-  fi
-else  
-  # stop install script if ollama is not running
-  echo "ollama is not running (Status: $STATUS)"
-  exit 1
+# Try to connect to ollama
+if curl -s "http://localhost:11434" >/dev/null 2>&1; then
+    echo "✓ ollama is already running"
+else
+    echo "ollama is not running, attempting to start..."
+    
+    # Try to start via systemd first (if installed as service)
+    if systemctl list-units --full -all | grep -q ollama.service; then
+        echo "Starting ollama service..."
+        sudo systemctl start ollama
+        sleep 3
+    else
+        # Start manually
+        echo "Starting ollama manually..."
+        ollama serve > /tmp/ollama.log 2>&1 &
+        sleep 3
+    fi
+    
+    # Verify it started
+    if curl -s "http://localhost:11434" >/dev/null 2>&1; then
+        echo "✓ ollama started successfully"
+    else
+        echo "✗ Failed to start ollama"
+        exit 1
+    fi
 fi
+
+# Check if the model is already downloaded
+echo "Checking for deepseek-r1:1.5b model..."
+
+if ollama list | grep -q "deepseek-r1:1.5b"; then
+    echo "✓ Model deepseek-r1:1.5b is already downloaded"
+    echo "  Skipping download..."
+else
+    echo "Downloading deepseek-r1:1.5b..."
+    if ollama pull deepseek-r1:1.5b; then
+        echo "✓ Download completed successfully"
+    else
+        echo "✗ Download failed"
+        exit 1
+    fi
+fi
+
+echo ""
+echo "========================================="
+echo "✓ Setup complete! ollama is ready to use"
+echo "========================================="
+echo ""
