@@ -81,7 +81,7 @@ def linter(queue):
 			os.system(f"xdotool key {item[1]}")
 		elif ("[FILE]"):
 			if (item[1] == "DESKTOP"):
-				for (k in range(0, int(item[2]))):
+				for k in range(0, int(item[2])):
 					os.system(f"touch /desktop/{k}.txt")
 				
 			elif(item[1] == "NETWORK"):
