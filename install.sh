@@ -33,15 +33,15 @@ else
     fi
 fi
 
-# Check and install pyautogui
-if pip3 list 2>/dev/null | grep -q "^pyautogui "; then
-    echo "✓ pyautogui package is already installed"
+# Check and install pynput
+if pip3 list 2>/dev/null | grep -q "^pynput "; then
+    echo "✓ pynput package is already installed"
 else
-    echo "Installing pyautogui package..."
-    if pip3 install --user pyautogui 2>/dev/null || sudo pip3 install --break-system-packages pyautogui; then
-        echo "✓ pyautogui package installed successfully"
+    echo "Installing pynput package..."
+    if pip3 install --user pynput 2>/dev/null || sudo pip3 install --break-system-packages pynput; then
+        echo "✓ pynput package installed successfully"
     else
-        echo "✗ Failed to install pyautogui package"
+        echo "✗ Failed to install pynput package"
         exit 1
     fi
 fi
