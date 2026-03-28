@@ -2,6 +2,11 @@
 echo "Updating package list..."
 sudo apt update
 
+# Function to check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 # Check if curl is instaled
 if ! command -v curl &> /dev/null; then
   echo "curl is not installed. Installing..."
