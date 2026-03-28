@@ -20,7 +20,7 @@ if pip3 list 2>/dev/null | grep -q "^keyboard "; then
     echo "✓ keyboard package is already installed"
 else
     echo "Installing keyboard package..."
-    if sudo pip3 install --break-system-packages keyboard; then
+    if pip3 install --break-system-packages keyboard; then
         echo "✓ keyboard package installed successfully"
     else
         echo "✗ Failed to install keyboard package"
