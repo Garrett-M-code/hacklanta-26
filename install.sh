@@ -34,12 +34,11 @@ if command_exists ollama; then
 else 
   echo "installing ollama..."
   curl -fsSL https://ollama.com/install.sh | sh
-
-  # Wait for ollama to start (adds a small delay)
-  echo "Waiting for ollama to start..."
-  sleep 3
 fi
 
+# Wait for ollama to start (adds a small delay)
+echo "Waiting for ollama to start..."
+sleep 3
 
 
 # Check if ollama is running and start if needed
