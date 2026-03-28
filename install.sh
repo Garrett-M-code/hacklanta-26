@@ -2,11 +2,6 @@
 echo "Updating package list..."
 sudo apt update
 
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
 # Check if curl is instaled
 if ! command -v curl &> /dev/null; then
   echo "curl is not installed. Installing..."
@@ -33,12 +28,12 @@ else
     fi
 fi
 
-# check if ollama is already installed
-if command_exists ollama; then
-  echo "✓ ollama is already installed"
-else 
-  echo "installing ollama..."
-  curl -fsSL https://ollama.com/install.sh | sh
+# Check if ollama binary exists
+if [ -f /usr/local/bin/ollama ] || [ -f /usr/bin/ollama ]; then
+    echo "✓ ollama binary found, skipping installation"
+else
+    echo "Installing ollama..."
+    curl -fsSL https://ollama.com/install.sh | sh
 fi
 
 # Wait for ollama to start (adds a small delay)
