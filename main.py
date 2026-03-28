@@ -3,6 +3,7 @@ import logging
 import sys
 import time
 import os
+import threading
 
 from pynput.mouse import Button, Controller
 
@@ -34,7 +35,7 @@ def settings():
 	answer = -1
 	while ((answer != 1) and (answer != 2)):
 		print("Do you want prompts to be SFW (1) or NSFW (2)?\n")
-		answer = input()
+		answer = int(input())
 		
 	if (answer == 2):
 		mode = "not safe for work"
@@ -110,7 +111,7 @@ def parse_response(response):
 	queue = response.split("\n")
 
 	index = 0
-	for i in x:
+	for i in queue:
 		queue[index] = i.split(" ")
 		index += 1  # ← Fix: use += not ++
 
