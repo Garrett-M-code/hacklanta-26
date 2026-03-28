@@ -49,9 +49,10 @@ def settings():
 		
 	logging.info(f"Mode selected (SFW=1, NSFW=2): {answer}")
 	
-	print("Have fun!")
-	
 	prompting(init_prompt)
+
+
+	print("Have fun!")
 
 # This method prompts the deepseek-r1:1.5b LLM and receives an answer.
 def prompting(prompt, model='deepseek-r1:1.5b'):
