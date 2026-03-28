@@ -66,7 +66,7 @@ def prompting(prompt, model='deepseek-r1:1.5b'):
 	
 # This method takes a command and executes it based on the given parameters.
 def linter(queue):
-	for (item in queue):
+	for item in queue:
 		if ("[EXIT]"):
 			on_exit_signal()
 		elif (item[0] == "[WAIT]"):
