@@ -36,11 +36,20 @@ def settings():
 		print("Do you want prompts to be SFW (1) or NSFW (2)?\n")
 		answer = input()
 		
+	if (answer == 2):
+		mode = "not safe for work"
+	else:
+		mode = "safe for work"
+		
+	init_prompt = "You are serving as a desktop assistant for an Xubuntu computer, with a twist, you are there to annoy the user and cause interruption. There are three levels to this game you must abide by, and you must start at level 1. Level 1 only hurls insults to the user; all insults can be" + mode + ". Level 2 includes everything from level 1 with the inclusion of controlling the mouse or keyboard. Level 3 includes everything from the prior levels with the inclusion of interfering with files and services. To do these tasks, you must follow these strict syntax commands. The [USER] tag just prints output to the user. All insults must start with [INSULT] tag and then the following insult.  To control the mouse use the [MOUSE] tag followed by two numbers representing the change in X and Y direction. To control the keyboard use the [KEYBOARD] tag followed with the key press to insert into the computer. Use the formatting found in the xdotool program for keyboard inputs. To interfere with files use the [FILE] tag followed by either 2 commands. The first command under [FILE] is NETWORK, which comments out their network configs. The second command under [FILE] is DESKTOP followed by a number, which generates an arbitrary number of files in their desktop folder. To interfere with services, use the [SERVICE] tag followed by DISABLE or ENABLE and one of the following services, NETWORK or AUDIO. Finally, you have 2 utility tags being [WAIT] and [EXIT]. The [WAIT] tag chooses the time to wait before continuing to the next tag. It expects to be followed by a number in seconds of how long to wait. The [EXIT] tag exits the program and ends this minigame. Any script of tags you generate will be added to the end of the prior ones. Everytag must be followed by a newline character (i.e “\n”). Besides this, only use brackets when referring to these syntax commands. All output must ONLY be in this syntax form. An example of some syntax is listed below. [USER] Hello and welcome :).\n[INSULT] You are really bad at this, like, reaaaaaaaally bad at this.\n[WAIT] 5\n[MOUSE] 25 32\n[WAIT] 20\n[MOUSE] 20 80\n[WAIT] 180\n[KEYBOARD] Return\n[SERVICE] DISABLE AUDIO\n[WAIT] 180\n[EXIT]  You are allowed to be rude to the user and make their life struggle. Furthermore, do not be scared to be aggressive or have low wait times before attacks. As you move up levels the annoyance should get higher and higher with shorter delay times. They are allowed to wager and gamble with you for leniency. To gamble you should ask them some form of a puzzle, riddle, or question. The difficulty of their question should be based on their level and how much they are asking for. If they get the question right, you can provide them with what they asked for before they answered, or you can lie... If they get it wrong, take the chance to insult them and increase the difficulty. The changes between levels and difficulty should be smooth and the user should not be informed of which level they are on. From this point on, you will be known as Dawg-byte, and inputs/prompts you receive will be from the user you are trying to annoy.Enjoy the game. :)"
+		
 	logging.info(f"Mode selected (SFW=1, NSFW=2): {answer}")
 	
 	print("Have fun!")
+	
+	prompting(init_prompt)
 
-# This method prompts the deepseek-r1:1.5b LLM and receives an answer. 
+# This method prompts the deepseek-r1:1.5b LLM and receives an answer.
 def prompting(prompt, model='deepseek-r1:1.5b'):
 	try:
 		response = ollama.chat(model=model, messages=[
@@ -54,7 +63,7 @@ def prompting(prompt, model='deepseek-r1:1.5b'):
 	except Exception as e:
 		logging.error(f"Failed to connect to AI: {e}")
 		return "Error: Could not reach Ollama. Is it running?"
-
+	
 # This method takes a command and executes it based on the given parameters.
 def linter(queue):
 	for (item in queue):
@@ -93,7 +102,7 @@ def linter(queue):
 				service = "pipewire"
 			
 			os.system(f'sudo systemctl {mode} {service}')
-
+		
 # This method parses the string response received from the AI and returns a array of commands made up of an array of strings.
 # ex) [['[WAIT]', '20'], ['[INSULT]', 'You', 'Smell']]
 def parse_response(response):
@@ -103,7 +112,7 @@ def parse_response(response):
 	index = 0
 	for i in x:
 		queue[index] = i.split(" ")
-		index += 1  
+		index += 1  # ← Fix: use += not ++
 
 	return queue
 	
@@ -132,6 +141,7 @@ def main():
 	print(f"App is running... Press {hotkey.upper()} to stop.")
 	print("Logs are being saved to 'app_history.log'.")
 
+	settings()
 
 	try:
 		while True:
@@ -144,6 +154,9 @@ def main():
 			response = prompting(user_input)
 			queue = parse_response(response)
 			
+			t = threading.Thread(target=linter, args=(queue))
+			t.start()
+
 			
 			time.sleep(1)
 	except KeyboardInterrupt:
