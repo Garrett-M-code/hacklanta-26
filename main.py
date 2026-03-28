@@ -74,10 +74,10 @@ def linter(queue):
 			time.sleep(int(item[1]))
 		elif ("[USER]"):
 			full_message = " ".join(item[1:]) 
-   			print(full_message)
+			print(full_message)
 		elif ("[INPUT]"):
 			full_message = " ".join(item[1:]) 
-   			print(full_message)
+			print(full_message)
 		elif ("[MOUSE]"):
 			mouse.move(int(item[1]), int(item[2]))
 		elif ("[KEYBOARD]"):
