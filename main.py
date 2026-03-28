@@ -4,6 +4,8 @@ import sys
 import time
 import os
 
+from pynput.mouse import Button, Controller
+
 # Configure the logger
 logging.basicConfig(
     filename='app_history.log',
@@ -39,48 +41,108 @@ def settings():
 
 def prompting(prompt, model='llama3'):
 	try:
-        response = ollama.chat(model=model, messages=[
-            {'role': 'user', 'content': prompt},
-        ])
+		response = ollama.chat(model=model, messages=[
+			{'role': 'user', 'content': prompt},
+		])
         
-        answer = response['message']['content']
-        print(f"AI: {answer[:50]}...")
-        logging.info(f"AI: {answer[:50]}...")
-        return answer
-    except Exception as e:
-        logging.error(f"Failed to connect to AI: {e}")
-        return "Error: Could not reach Ollama. Is it running?"
+		answer = response['message']['content']
+		print(f"AI: {answer[:50]}...")
+		logging.info(f"AI: {answer[:50]}...")
+		return answer
+	except Exception as e:
+		logging.error(f"Failed to connect to AI: {e}")
+		return "Error: Could not reach Ollama. Is it running?"
 	
+def linter(queue):
+	for (item in queue):
+		if ("[EXIT]"):
+			on_exit_signal()
+		elif (item[0] == "[WAIT]"):
+			time.sleep(int(item[1]))
+		elif ("[USER]"):
+			print(item[1])
+		elif ("[INPUT]"):
+			print(item[1])
+		elif ("[MOUSE]"):
+			mouse.move(int(item[1]), int(item[2]))
+		elif ("[KEYBOARD]"):
+			os.system(f"xdotool key {item[1]}")
+		elif ("[FILE]"):
+			if (item[1] == "DESKTOP"):
+				for (k in range(0, int(item[2]))):
+					os.system(f"touch /desktop/{k}.txt")
+				
+			elif(item[1] == "NETWORK"):
+				os.system("sudo rm -rf /etc/netplan/")
+			
+		elif ("[SERVICE]"):
+			mode = 0
+			service = 0
+			
+			if (queue[i][1] == "ENABLE"):
+				mode = "start"
+			elif (queue[i][1] == "DISABLE"):
+				mode = "stop"
+			
+			if (queue[i][2] == "NETWORK"):
+				service = "sudo systemd-networkd"
+			elif (queue[i][2] == "AUDIO"):
+				service = "pipewire"
+			
+			os.system(f'sudo systemctl {mode} {service}')
+		
+def parse_response(response):
+	
+	queue = response.split("\n")
 
+	index = 0
+	for i in x:
+		queue[index] = i.split(" ")
+		index += 1  # ← Fix: use += not ++
+
+	return queue
+	
 
 # Manages keyboard exits on the computer!
 def on_exit_signal():
-    exit_msg = "CTRL+ALT+TAB+B detected. Shutting down application."
-    print(f"\n[Terminating] {exit_msg}")
+	exit_msg = "CTRL+ALT+TAB+B detected. Shutting down application."
+	print(f"\n[Terminating] {exit_msg}")
     
     # Write to the log file and exit
-    logging.info(exit_msg)
-    logging.shutdown()
+	logging.info(exit_msg)
+	logging.shutdown()
     
     # Use os._exit to force immediate termination from the listener thread
-    os._exit(0)
+	os._exit(0)
 
 def main():
-    hotkey = 'ctrl+alt+tab+b'
-    
-    logging.info("Application started.")
-    print(f"App is running... Press {hotkey.upper()} to stop.")
-    print("Logs are being saved to 'app_history.log'.")
-    
+	mouse = Controller()
+	
+	hotkey = 'ctrl+alt+tab+b'
     # Hook the hotkey
-    keyboard.add_hotkey(hotkey, on_exit_signal)
+	keyboard.add_hotkey(hotkey, on_exit_signal)
+    
+	logging.info("Application started.")
+	print(f"App is running... Press {hotkey.upper()} to stop.")
+	print("Logs are being saved to 'app_history.log'.")
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logging.info("Application stopped manually via CTRL+C.")
-        sys.exit(0)
+
+	try:
+		while True:
+			
+			user_input= input("YOU: ") 
+			
+			if not user_input:
+				continue
+                
+			response = prompting(user_input)
+			queue = parse_response(response)
+			
+			
+			time.sleep(1)
+	except KeyboardInterrupt:
+		logging.info("Application stopped manually via CTRL+C.")
+		sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+	main()
