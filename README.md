@@ -9,7 +9,7 @@ Therefore please have fun with this script in a safe virtual environment.
 
 To install this program type the folowing command:
 
-sudo ./install.sh
+sudo bash ./install.sh
 
 To run this program type the following command:
 
