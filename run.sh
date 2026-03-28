@@ -32,7 +32,7 @@ fi
 ollama pull deepseek-r1:1.5b
 
 # run the python script 
-sudo Python main.py 
+sudo python3 main.py 
 
 
 
