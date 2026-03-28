@@ -1,3 +1,15 @@
+# Check if curl is instaled
+if ! command -v curl &> /dev/null; then
+  echo "curl is not installed. Installing..."
+  sudo apt update && sudo apt install -y curl
+fi
+
+# check if pip3 is installed
+if ! command -v pip &> /dev/null && ! command -v pop3 &> /dev/null; then
+  echo "pip3 is not installed. Installing..."
+  sudo apt update && sudo apt install -y python3-pip3
+fi
+
 # installing dependencies
 pip install keyboard
 
